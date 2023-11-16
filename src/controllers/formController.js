@@ -11,7 +11,7 @@ export const form = asyncHandler(async (req, res) => {
 
     const { firstName, lastName, email, phone, photo, checkIn, checkOut, apartmentName, guests, amount } = req.body;
 
-    if (!firstName || !lastName || !email || !phone || !photo || !checkIn || !checkOut || !apartmentName || !guests || !amount) {
+    if (!firstName || !lastName || !email || !phone || !checkIn || !checkOut || !apartmentName || !guests || !amount) {
         res.status(400);
 
         if (!firstName) {
@@ -32,11 +32,6 @@ export const form = asyncHandler(async (req, res) => {
         if (!phone) {
             res.status(400);
             throw new Error('Phone is required');
-        }
-
-        if (!photo) {
-            res.status(400);
-            throw new Error('Photo is required');
         }
 
         if (!checkIn) {
