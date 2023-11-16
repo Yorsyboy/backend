@@ -19,7 +19,7 @@ const formSchema = new mongoose.Schema({
     },
     photo: {
         type: [String],
-        required: [true, 'Please upload your photo'],
+        // required: [true, 'Please upload your photo'],
     },
     checkIn: {
         type: Date,
