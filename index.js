@@ -7,6 +7,7 @@ import userRouter from "./src/routes/UserRoutes.js";
 import apartmentRouter from "./src/routes/apartmentRoute.js";
 import { errorHandler } from "./src/middleware/errorMiddleware.js";
 import formRouter from "./src/routes/formRoutes.js";
+import reviewRouter from "./src/routes/reviewRoute.js";
 const PORT = process.env.PORT || 5000;
 
 dotenv.config();
@@ -29,6 +30,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api/users", userRouter);
 app.use("/api/apartment", apartmentRouter);
 app.use("/api/form", formRouter);
+app.use("/api/review", reviewRouter);
+
 app.use(errorHandler);
 
 

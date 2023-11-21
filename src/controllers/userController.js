@@ -133,49 +133,36 @@ export const getMe = asyncHandler(async (req, res) => {
 export const forgotPassword = asyncHandler(async (req, res) => {
     const { email } = req.body;
 
-    // Check for user mail
-    const user = await User.findOne({ email });
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            res.status(404);
+            throw new Error('User not found');
+        }
 
-    if (!user) {
-        res.status(404);
-        throw new Error('Email does not exist');
+
+        const resetLink = generateResetLink();
+        sendResetPasswordEmail(email, resetLink);
+
+        return res.status(200).json({
+            message: 'Reset password link sent successfully'
+        });
+    } catch (error) {
+        res.status(500);
+        throw new Error(error.message);
     }
 
-    // Generate token
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_RESET_PASSWORD, { expiresIn: '10m' });
-
-    // Update resetLink in db
-    user.resetLink = token;
-
-    await user.save();
-
-    // Send a confirmation email
-    const mailOptions = {
-        from: 'milanosignatureint@gmail.com',
-        to: user.email,
-        subject: 'Password Reset Link',
-        html: `
-            <h2>Please click on the link below to reset your password</h2>
-            <p>${process.env.CLIENT_URL}/reset-password/${token}</p>
-        `
-    };
-
-    transporter.sendMail(mailOptions, (err, data) => {
-        if (err) {
-            res.status(500);
-            console.log(err);
-            throw new Error('Something went wrong');
-        } else {
-            res.status(200).json({
-                message: `Email has been sent to ${user.email}`
-            });
-        }
-    });
-
-
-
-
 });
+
+function generateResetLink() {
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_RESET_PASSWORD, { expiresIn: '10m' });
+    const resetLink = `${process.env.BASE_URL}/api/users/reset-password/${token}`;
+    return resetLink;
+}
+
+function sendResetPasswordEmail(email, resetLink) {
+   
+}
 
 
 // @desc    Reset password
